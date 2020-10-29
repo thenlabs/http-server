@@ -48,7 +48,7 @@ testCase('UtilsTest.php', function () {
 
         test(function () {
             $message = <<<HTTP
-                POST /cgi-bin/process.cgi HTTP/1.1
+                POST /cgi-bin/process.cgi/?q=1&vendor=thenlabs HTTP/1.1
                 User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
                 Host: www.tutorialspoint.com
                 Content-Type: application/x-www-form-urlencoded
@@ -56,13 +56,13 @@ testCase('UtilsTest.php', function () {
                 Accept-Language: en-us
                 Accept-Encoding: gzip, deflate
                 Connection: Keep-Alive\r
-                licenseID=string&content=string&/paramsXML=string
+                licenseID=string&content=string&paramsXML=string
             HTTP;
 
             $request = Utils::createRequestFromHttpMessage($message);
 
             $this->assertEquals('POST', $request->getMethod());
-            $this->assertEquals('/cgi-bin/process.cgi', $request->getPathInfo());
+            $this->assertEquals('/cgi-bin/process.cgi/', $request->getPathInfo());
             $this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
 
             $expectedHeaders = [
@@ -78,9 +78,14 @@ testCase('UtilsTest.php', function () {
             $this->assertArraySubset($expectedHeaders, $request->headers->all());
 
             $this->assertEquals(
-                '    licenseID=string&content=string&/paramsXML=string',
+                '    licenseID=string&content=string&paramsXML=string',
                 $request->getContent()
             );
+
+            $this->assertEquals('1', $request->query->get('q'));
+            $this->assertEquals('thenlabs', $request->query->get('vendor'));
+
+            $this->assertEquals('string', $request->request->get('licenseID'));
         });
     });
 });

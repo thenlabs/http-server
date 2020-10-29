@@ -23,6 +23,7 @@ class Utils
 
         $firstLine = substr($messageHeader, 0, strpos($messageHeader, "\n"));
         $firstLine = trim($firstLine);
+
         [$method, $uri, $protocolVersion] = explode(' ', $firstLine);
 
         $headersPattern = <<<'TXT'
@@ -40,6 +41,12 @@ class Utils
             $server[$headerName] = $headerValue;
         }
 
-        return Request::create($uri, $method, [], [], [], $server, $messageContent);
+        $parameters = [];
+
+        if ($messageContent) {
+            parse_str($messageContent, $parameters);
+        }
+
+        return Request::create($uri, $method, $parameters, [], [], $server, $messageContent);
     }
 }
