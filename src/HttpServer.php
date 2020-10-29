@@ -76,14 +76,14 @@ class HttpServer
             return;
         }
 
-        $response = $this->handle($request);
+        $requestEvent = new Event\RequestEvent($request);
+
+        $this->dispatcher->dispatch(RequestEvent::class, $requestEvent);
+
+        $response = $requestEvent->getResponse();
         $responseMessage = (string) $response;
 
         socket_write($clientSocket, $responseMessage, strlen($responseMessage));
         socket_close($clientSocket);
-    }
-
-    protected function handle(Request $request): Response
-    {
     }
 }
