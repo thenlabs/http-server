@@ -60,7 +60,7 @@ class HttpServer
             return;
         }
 
-        $httpRequestMessage = socket_read($clientSocket, 1024, PHP_BINARY_READ);
+        $httpRequestMessage = socket_read($clientSocket, 1500, PHP_BINARY_READ);
         $request = Utils::createRequestFromHttpMessage($httpRequestMessage);
 
         if (! $request instanceof Request) {
