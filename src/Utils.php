@@ -12,13 +12,17 @@ class Utils
 {
     public static function createRequestFromHttpMessage(string $message): Request
     {
+        $headersPattern = <<<'TXT'
+        /([\w-]+):([\w \.\/\\\(\);:,\-\+=\*"']+)/
+        TXT;
+
+        preg_match_all($headersPattern, $message, $matchedHeaders);
+
         $request = new Request;
 
-        preg_match_all('/([\w-]+):([\w \.\/\\\(\);:,\-\+=\*"]+)/', $message, $matches);
-
-        foreach ($matches[0] as $key => $value) {
-            $headerName = trim($matches[1][$key]);
-            $headerValue = trim($matches[2][$key]);
+        foreach ($matchedHeaders[0] as $key => $value) {
+            $headerName = trim($matchedHeaders[1][$key]);
+            $headerValue = trim($matchedHeaders[2][$key]);
 
             $request->headers->set($headerName, $headerValue);
         }
