@@ -5,6 +5,7 @@ namespace ThenLabs\HttpServer;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Exception;
 
 /**
@@ -12,8 +13,6 @@ use Exception;
  */
 class HttpServer
 {
-    protected $socket;
-
     protected $defaultConfig = [
         'host' => '127.0.0.1',
         'port' => 80,
@@ -24,16 +23,26 @@ class HttpServer
 
     protected $config;
 
+    protected $socket;
+
+    protected $dispatcher;
+
     public function __construct(array $config = [])
     {
         $this->config = array_merge($this->defaultConfig, $config);
 
         $this->socket = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'));
+        $this->dispatcher = new EventDispatcher;
     }
 
     public function getSocket()
     {
         return $this->socket;
+    }
+
+    public function getDispatcher(): EventDispatcher
+    {
+        return $this->dispatcher;
     }
 
     public function start(): void
