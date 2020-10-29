@@ -12,21 +12,44 @@ class Utils
 {
     public static function createRequestFromHttpMessage(string $message): Request
     {
+        $messageParts = explode("\n\r", $message);
+
+        if (count($messageParts) > 1) {
+            [$messageHeader, $messageContent] = $messageParts;
+        } else {
+            $messageHeader = $messageParts[0];
+        }
+
+        $firstLine = substr($messageHeader, 0, strpos($messageHeader, "\n"));
+        $firstLine = trim($firstLine);
+        [$method, $uri, $protocolVersion] = explode(' ', $firstLine);
+
         $headersPattern = <<<'TXT'
         /([\w-]+):([\w \.\/\\\(\);:,\-\+=\*"']+)/
         TXT;
 
-        preg_match_all($headersPattern, $message, $matchedHeaders);
+        preg_match_all($headersPattern, $messageHeader, $matchedHeaders);
 
-        $request = new Request;
+        $server = [];
 
         foreach ($matchedHeaders[0] as $key => $value) {
-            $headerName = trim($matchedHeaders[1][$key]);
+            $headerName = 'HTTP_'.strtoupper(trim($matchedHeaders[1][$key]));
             $headerValue = trim($matchedHeaders[2][$key]);
 
-            $request->headers->set($headerName, $headerValue);
+            $server[$headerName] = $headerValue;
         }
 
-        return $request;
+        return Request::create($uri, $method, [], [], [], $server, $messageContent ?? null);
+
+        // $request = new Request;
+
+        // foreach ($matchedHeaders[0] as $key => $value) {
+        //     $headerName = trim($matchedHeaders[1][$key]);
+        //     $headerValue = trim($matchedHeaders[2][$key]);
+
+        //     $request->headers->set($headerName, $headerValue);
+        // }
+
+        // return $request;
     }
 }
