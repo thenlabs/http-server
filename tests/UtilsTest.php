@@ -45,5 +45,37 @@ testCase('UtilsTest.php', function () {
 
             $this->assertEquals($expectedHeaders, $request->headers->all());
         });
+
+        test(function () {
+            $message = <<<HTTP
+                POST /cgi-bin/process.cgi HTTP/1.1
+                User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+                Host: www.tutorialspoint.com
+                Content-Type: application/x-www-form-urlencoded
+                Content-Length: length
+                Accept-Language: en-us
+                Accept-Encoding: gzip, deflate
+                Connection: Keep-Alive
+
+                licenseID=string&content=string&/paramsXML=string
+            HTTP;
+
+            $request = Utils::createRequestFromHttpMessage($message);
+
+            $this->assertEquals('POST', $request->getMethod());
+            $this->assertEquals('/cgi-bin/process.cgi', $request->getPathInfo());
+
+            $expectedHeaders = [
+                'user-agent' => ['Mozilla/4.0 (compatible; MSIE5.01; Windows NT)'],
+                'host' => ['www.tutorialspoint.com'],
+                'content-type' => ['application/x-www-form-urlencoded'],
+                'content-length' => ['length'],
+                'accept-language' => ['en-us'],
+                'accept-encoding' => ['gzip, deflate'],
+                'connection' => ['Keep-Alive'],
+            ];
+
+            $this->assertEquals($expectedHeaders, $request->headers->all());
+        });
     });
 });
