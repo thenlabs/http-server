@@ -17,8 +17,9 @@ class HttpServer
     protected $defaultConfig = [
         'host' => '127.0.0.1',
         'port' => 80,
-        'blocking' => true,
+        'blocking' => false,
         'backlog' => 0,
+        'document_root' => null,
     ];
 
     protected $config;
@@ -46,7 +47,7 @@ class HttpServer
 
         socket_listen($this->socket, $this->config['backlog']);
 
-        if ($this->config['blocking']) {
+        if (! $this->config['blocking']) {
             socket_set_nonblock($this->socket);
         }
     }
