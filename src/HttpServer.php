@@ -33,6 +33,21 @@ class HttpServer
 
         $this->socket = socket_create(AF_INET, SOCK_STREAM, getprotobyname('tcp'));
         $this->dispatcher = new EventDispatcher;
+
+        if (isset($this->config['document_root']) &&
+            is_dir($this->config['document_root'])
+        ) {
+            $this->dispatcher->addListener(RequestEvent::class, function (RequestEvent $event) {
+                $request = $event->getRequest();
+                $uri = $request->getUri();
+                $filename = $this->config['document_root'].$uri;
+
+                if (file_exists($filename)) {
+                    $response = new Response;
+                    $response->setContent(file_get_contents($filename));
+                }
+            });
+        }
     }
 
     public function getSocket()

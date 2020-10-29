@@ -55,8 +55,7 @@ testCase('UtilsTest.php', function () {
                 Content-Length: length
                 Accept-Language: en-us
                 Accept-Encoding: gzip, deflate
-                Connection: Keep-Alive\r
-                licenseID=string&content=string&paramsXML=string
+                Connection: Keep-Alive\n\rlicenseID=string&content=string&paramsXML=string
             HTTP;
 
             $request = Utils::createRequestFromHttpMessage($message);
@@ -78,7 +77,7 @@ testCase('UtilsTest.php', function () {
             $this->assertArraySubset($expectedHeaders, $request->headers->all());
 
             $this->assertEquals(
-                '    licenseID=string&content=string&paramsXML=string',
+                'licenseID=string&content=string&paramsXML=string',
                 $request->getContent()
             );
 

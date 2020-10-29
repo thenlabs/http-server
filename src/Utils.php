@@ -12,7 +12,7 @@ class Utils
 {
     public static function createRequestFromHttpMessage(string $message): Request
     {
-        $messageParts = explode("\r\n", $message);
+        $messageParts = explode("\n\r", $message);
 
         if (count($messageParts) > 1) {
             [$messageHeader, $messageContent] = $messageParts;
