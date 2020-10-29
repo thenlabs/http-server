@@ -1,0 +1,26 @@
+{
+    "name": "thenlabs/http-server",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andy Daniel Navarro Taño",
+            "email": "andaniel05@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/http-foundation": "^4.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "ThenLabs\\HttpServer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ThenLabs\\HttpServer\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "thenlabs/pyramidal-tests": "^1.1"
+    }
+}
