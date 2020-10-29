@@ -48,15 +48,15 @@ testCase('UtilsTest.php', function () {
 
         test(function () {
             $message = <<<HTTP
-            POST /cgi-bin/process.cgi HTTP/1.1
-            User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
-            Host: www.tutorialspoint.com
-            Content-Type: application/x-www-form-urlencoded
-            Content-Length: length
-            Accept-Language: en-us
-            Accept-Encoding: gzip, deflate
-            Connection: Keep-Alive\r
-            licenseID=string&content=string&/paramsXML=string
+                POST /cgi-bin/process.cgi HTTP/1.1
+                User-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)
+                Host: www.tutorialspoint.com
+                Content-Type: application/x-www-form-urlencoded
+                Content-Length: length
+                Accept-Language: en-us
+                Accept-Encoding: gzip, deflate
+                Connection: Keep-Alive\r
+                licenseID=string&content=string&/paramsXML=string
             HTTP;
 
             $request = Utils::createRequestFromHttpMessage($message);
@@ -77,7 +77,10 @@ testCase('UtilsTest.php', function () {
 
             $this->assertArraySubset($expectedHeaders, $request->headers->all());
 
-            $this->assertEquals('licenseID=string&content=string&/paramsXML=string', $request->getContent());
+            $this->assertEquals(
+                '    licenseID=string&content=string&/paramsXML=string',
+                $request->getContent()
+            );
         });
     });
 });
