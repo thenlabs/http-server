@@ -12,12 +12,13 @@ class Utils
 {
     public static function createRequestFromHttpMessage(string $message): Request
     {
-        $messageParts = explode("\n\r", $message);
+        $messageParts = explode("\r\n", $message);
 
         if (count($messageParts) > 1) {
             [$messageHeader, $messageContent] = $messageParts;
         } else {
             $messageHeader = $messageParts[0];
+            $messageContent = null;
         }
 
         $firstLine = substr($messageHeader, 0, strpos($messageHeader, "\n"));
@@ -39,6 +40,6 @@ class Utils
             $server[$headerName] = $headerValue;
         }
 
-        return Request::create($uri, $method, [], [], [], $server, $messageContent ?? null);
+        return Request::create($uri, $method, [], [], [], $server, $messageContent);
     }
 }
