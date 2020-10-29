@@ -40,16 +40,5 @@ class Utils
         }
 
         return Request::create($uri, $method, [], [], [], $server, $messageContent ?? null);
-
-        // $request = new Request;
-
-        // foreach ($matchedHeaders[0] as $key => $value) {
-        //     $headerName = trim($matchedHeaders[1][$key]);
-        //     $headerValue = trim($matchedHeaders[2][$key]);
-
-        //     $request->headers->set($headerName, $headerValue);
-        // }
-
-        // return $request;
     }
 }
