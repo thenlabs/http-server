@@ -5,6 +5,8 @@
 
     <php>
         <env name="PYRAMIDAL_ONLY" value="1"></env>
+        <env name="HOSTNAME" value="127.0.0.1"></env>
+        <env name="PORT" value="8080"></env>
     </php>
 
     <testsuites>
