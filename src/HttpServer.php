@@ -82,6 +82,11 @@ class HttpServer
         }
 
         $httpRequestMessage = socket_read($clientSocket, 1500, PHP_BINARY_READ);
+
+        if (empty($httpRequestMessage)) {
+            return;
+        }
+
         $request = Utils::createRequestFromHttpMessage($httpRequestMessage);
 
         if (! $request instanceof Request) {
@@ -99,7 +104,7 @@ class HttpServer
         socket_close($clientSocket);
     }
 
-    private function serveFileListener(RequestEvent $event): void
+    protected function serveFileListener(RequestEvent $event): void
     {
         $request = $event->getRequest();
         $uri = $request->getRequestUri();

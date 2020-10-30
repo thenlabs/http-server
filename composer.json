@@ -9,7 +9,8 @@
     ],
     "require": {
         "symfony/http-foundation": "^4.4",
-        "symfony/event-dispatcher": "^4.4"
+        "symfony/event-dispatcher": "^4.4",
+        "symfony/mime": "^4.4"
     },
     "autoload": {
         "psr-4": {
