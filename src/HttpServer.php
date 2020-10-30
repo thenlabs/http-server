@@ -6,6 +6,8 @@ namespace ThenLabs\HttpServer;
 use ThenLabs\HttpServer\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Exception;
 use Closure;
@@ -92,10 +94,6 @@ class HttpServer
 
         $this->dispatcher->dispatch($requestEvent);
 
-        if (! $response = $requestEvent->getResponse()) {
-            $response = new Response('', 404);
-        }
-
         $responseMessage = (string) $response;
 
         socket_write($clientSocket, $responseMessage, strlen($responseMessage));
@@ -107,15 +105,27 @@ class HttpServer
         $request = $event->getRequest();
         $uri = $request->getRequestUri();
 
-        if ('?%0A=' == substr($uri, -5)) {
+        if ('?%0A=' === substr($uri, -5)) {
             $filePath = substr($uri, 0, -5);
+        }
+
+        if ($filePath == '/') {
+            $filePath = '/index.html';
         }
 
         $fileName = $this->config['document_root'].$filePath;
 
+        $response = $event->getResponse();
+
         if (file_exists($fileName)) {
-            $response = $event->getResponse();
+            $file = new File($fileName);
+
+            $contentType = $file->getMimeType() ?: 'application/octet-stream';
+
+            $response->headers->set('Content-Type', $contentType);
             $response->setContent(file_get_contents($fileName));
+        } else {
+            $response->setStatusCode(404);
         }
     }
 }
