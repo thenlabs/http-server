@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Exception;
+use Closure;
 
 /**
  * @author Andy Daniel Navarro Taño <andaniel05@gmail.com>
@@ -38,16 +39,10 @@ class HttpServer
         if (isset($this->config['document_root']) &&
             is_dir($this->config['document_root'])
         ) {
-            $this->dispatcher->addListener(RequestEvent::class, function (RequestEvent $event) {
-                $request = $event->getRequest();
-                $uri = $request->getUri();
-                $filename = $this->config['document_root'].$uri;
-
-                if (file_exists($filename)) {
-                    $response = new Response;
-                    $response->setContent(file_get_contents($filename));
-                }
-            });
+            $this->dispatcher->addListener(
+                RequestEvent::class,
+                Closure::fromCallable([$this, 'serveFileListener'])
+            );
         }
     }
 
@@ -92,14 +87,35 @@ class HttpServer
             return;
         }
 
-        $requestEvent = new RequestEvent($request);
+        $response = new Response;
+        $requestEvent = new RequestEvent($request, $response);
 
-        $this->dispatcher->dispatch(RequestEvent::class, $requestEvent);
+        $this->dispatcher->dispatch($requestEvent);
 
-        $response = $requestEvent->getResponse();
+        if (! $response = $requestEvent->getResponse()) {
+            $response = new Response('', 404);
+        }
+
         $responseMessage = (string) $response;
 
         socket_write($clientSocket, $responseMessage, strlen($responseMessage));
         socket_close($clientSocket);
+    }
+
+    private function serveFileListener(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+        $uri = $request->getRequestUri();
+
+        if ('?%0A=' == substr($uri, -5)) {
+            $filePath = substr($uri, 0, -5);
+        }
+
+        $fileName = $this->config['document_root'].$filePath;
+
+        if (file_exists($fileName)) {
+            $response = $event->getResponse();
+            $response->setContent(file_get_contents($fileName));
+        }
     }
 }

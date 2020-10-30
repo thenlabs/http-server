@@ -16,9 +16,10 @@ class RequestEvent extends Event
 
     protected $response;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
+        $this->response = $response;
     }
 
     public function getRequest(): Request
