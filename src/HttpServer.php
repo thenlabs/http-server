@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mime\MimeTypes;
 use Exception;
 use Closure;
 
@@ -101,7 +102,7 @@ class HttpServer
     }
 
     private function serveFileListener(RequestEvent $event): void
-    {
+   {
         $request = $event->getRequest();
         $uri = $request->getRequestUri();
 
@@ -118,11 +119,13 @@ class HttpServer
         $response = $event->getResponse();
 
         if (file_exists($fileName)) {
-            $file = new File($fileName);
+            $fileInfo = pathinfo($fileName);
 
-            $contentType = $file->getMimeType() ?: 'application/octet-stream';
+            $mimeTypes = new MimeTypes();
+            $mimeTypes = $mimeTypes->getMimeTypes($fileInfo['extension']);
+            $mimeType = $mimeTypes[0];
 
-            $response->headers->set('Content-Type', $contentType);
+            $response->headers->set('Content-Type', $mimeType);
             $response->setContent(file_get_contents($fileName));
         } else {
             $response->setStatusCode(404);
