@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace ThenLabs\HttpServer;
 
+use ThenLabs\HttpServer\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -91,7 +92,7 @@ class HttpServer
             return;
         }
 
-        $requestEvent = new Event\RequestEvent($request);
+        $requestEvent = new RequestEvent($request);
 
         $this->dispatcher->dispatch(RequestEvent::class, $requestEvent);
 
