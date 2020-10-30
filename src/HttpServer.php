@@ -6,8 +6,6 @@ namespace ThenLabs\HttpServer;
 use ThenLabs\HttpServer\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mime\MimeTypes;
 use Exception;
@@ -102,7 +100,7 @@ class HttpServer
     }
 
     private function serveFileListener(RequestEvent $event): void
-   {
+    {
         $request = $event->getRequest();
         $uri = $request->getRequestUri();
 
