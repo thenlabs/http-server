@@ -11,6 +11,9 @@ setTestCaseClass(TestCase::class);
 
 testCase('FunctionalTest.php', function () {
     test(function () {
+        $logsFile = __DIR__.'/.logs/test.logs';
+        file_put_contents($logsFile, '');
+
         $capabilities = DesiredCapabilities::chrome();
         $driver = RemoteWebDriver::create($_ENV['SELENIUM_SERVER'], $capabilities);
 
