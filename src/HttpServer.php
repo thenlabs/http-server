@@ -107,11 +107,7 @@ class HttpServer
     protected function serveFileListener(RequestEvent $event): void
     {
         $request = $event->getRequest();
-        $uri = $request->getRequestUri();
-
-        if ('?%0A=' === substr($uri, -5)) {
-            $filePath = substr($uri, 0, -5);
-        }
+        $filePath = $event->getRequestUri();
 
         if ($filePath == '/') {
             $filePath = '/index.html';
