@@ -10,7 +10,8 @@
     "require": {
         "symfony/http-foundation": "^4.4",
         "symfony/event-dispatcher": "^4.4",
-        "symfony/mime": "^4.4"
+        "symfony/mime": "^4.4",
+        "php-webdriver/webdriver": "^1.8"
     },
     "autoload": {
         "psr-4": {

@@ -75,15 +75,11 @@ class HttpServer
 
     public function run(): void
     {
-        $clientSocket = socket_accept($this->socket);
-
-        if (! $clientSocket) {
+        if (! $clientSocket = socket_accept($this->socket)) {
             return;
         }
 
-        $httpRequestMessage = socket_read($clientSocket, 1500, PHP_BINARY_READ);
-
-        if (empty($httpRequestMessage)) {
+        if (! $httpRequestMessage = socket_read($clientSocket, 1500, PHP_BINARY_READ)) {
             return;
         }
 

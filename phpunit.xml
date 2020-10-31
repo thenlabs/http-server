@@ -5,6 +5,9 @@
 
     <php>
         <env name="PYRAMIDAL_ONLY" value="1"></env>
+        <env name="SELENIUM_SERVER" value="http://localhost:4444/wd/hub"></env>
+        <env name="HOST" value="127.0.0.1"></env>
+        <env name="PORT" value="8080"></env>
     </php>
 
     <testsuites>
