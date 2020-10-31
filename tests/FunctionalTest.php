@@ -11,8 +11,8 @@ setTestCaseClass(TestCase::class);
 
 testCase('FunctionalTest.php', function () {
     test(function () {
-        $logsFile = __DIR__.'/.logs/test.logs';
-        file_put_contents($logsFile, '');
+        $logsFileName = __DIR__.'/.logs/test.logs';
+        file_put_contents($logsFileName, '');
 
         $capabilities = DesiredCapabilities::chrome();
         $driver = RemoteWebDriver::create($_ENV['SELENIUM_SERVER'], $capabilities);
@@ -32,5 +32,22 @@ testCase('FunctionalTest.php', function () {
         $driver->close();
 
         $this->assertTrue(true);
+
+        $logsFileContent = file_get_contents($logsFileName);
+
+        $expectedLines = [
+            'GET:/...OK',
+            'GET:/css/styles.css...OK',
+            'GET:/css/unexistent-file.css...Not Found',
+            'GET:/js/scripts.js...OK',
+            'GET:/img/image.gif...OK',
+            'GET:/img/image.png...OK',
+            'GET:/img/image.jpeg...OK',
+            'GET:/favicon.ico...OK',
+        ];
+
+        foreach ($expectedLines as $line) {
+            $this->assertContains($line, $logsFileContent);
+        }
     });
 });
