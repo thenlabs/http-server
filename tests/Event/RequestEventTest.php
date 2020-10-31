@@ -2,9 +2,7 @@
 
 namespace ThenLabs\HttpServer\Tests;
 
-use ThenLabs\HttpServer\Utils;
 use ThenLabs\HttpServer\Event\RequestEvent;
-use ThenLabs\HttpServer\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
