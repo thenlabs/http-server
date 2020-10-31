@@ -44,6 +44,7 @@ class Utils
         $parameters = [];
 
         if ($messageContent) {
+            $messageContent = trim($messageContent);
             parse_str($messageContent, $parameters);
         }
 

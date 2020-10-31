@@ -46,7 +46,8 @@ class HttpServer
         ) {
             $this->dispatcher->addListener(
                 RequestEvent::class,
-                Closure::fromCallable([$this, 'defaultListener'])
+                Closure::fromCallable([$this, 'defaultListener']),
+                -1
             );
         }
 

@@ -29,9 +29,7 @@ testCase('FunctionalTest.php', function () {
             $readyState = $driver->executeScript('return document.readyState');
         } while ($readyState != 'complete');
 
-        $driver->close();
-
-        $this->assertTrue(true);
+        $driver->get("http://{$_ENV['HOST']}:{$_ENV['PORT']}/custom");
 
         $logsFileContent = file_get_contents($logsFileName);
 
@@ -44,10 +42,13 @@ testCase('FunctionalTest.php', function () {
             'GET:/img/image.png...OK',
             'GET:/img/image.jpeg...OK',
             'GET:/favicon.ico...OK',
+            'GET:/custom...OK',
         ];
 
         foreach ($expectedLines as $line) {
             $this->assertContains($line, $logsFileContent);
         }
+
+        $driver->close();
     });
 });

@@ -3,6 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use ThenLabs\HttpServer\HttpServer;
+use ThenLabs\HttpServer\Event\RequestEvent;
 use Monolog\Handler\StreamHandler;
 
 $config = [
@@ -13,6 +14,13 @@ $config = [
 
 $server = new HttpServer($config);
 $server->getLogger()->pushHandler(new StreamHandler(__DIR__.'/.logs/test.logs'));
+$server->getDispatcher()->addListener(RequestEvent::class, function ($event) {
+    if ($event->getRequestUri() == '/custom') {
+        $event->getResponse()->setContent('Custom');
+        $event->stopPropagation();
+    }
+});
+
 $server->start();
 
 while (true) {
