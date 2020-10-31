@@ -16,10 +16,13 @@ class RequestEvent extends Event
 
     protected $response;
 
-    public function __construct(Request $request, Response $response)
+    protected $clientSocket;
+
+    public function __construct(Request $request, Response $response, $clientSocket)
     {
         $this->request = $request;
         $this->response = $response;
+        $this->clientSocket = $clientSocket;
     }
 
     public function getRequest(): Request
@@ -46,5 +49,10 @@ class RequestEvent extends Event
         }
 
         return $uri;
+    }
+
+    public function getClientSocket()
+    {
+        return $this->clientSocket;
     }
 }

@@ -113,13 +113,13 @@ class HttpServer
         }
 
         $response = new Response;
-        $requestEvent = new RequestEvent($request, $response);
+        $requestEvent = new RequestEvent($request, $response, $clientSocket);
 
         $this->dispatcher->dispatch($requestEvent);
 
         $responseMessage = (string) $response;
 
-        socket_write($clientSocket, $responseMessage, strlen($responseMessage));
+        @socket_write($clientSocket, $responseMessage, strlen($responseMessage));
 
         $method = $request->getMethod();
         $uri = $requestEvent->getRequestUri();
@@ -127,7 +127,7 @@ class HttpServer
 
         $this->logger->info("{$method}:{$uri}...{$status}");
 
-        socket_close($clientSocket);
+        @socket_close($clientSocket);
     }
 
     protected function defaultListener(RequestEvent $event): void
@@ -148,9 +148,12 @@ class HttpServer
 
             $mimeTypes = new MimeTypes();
             $mimeTypes = $mimeTypes->getMimeTypes($fileInfo['extension']);
-            $mimeType = $mimeTypes[0];
 
-            $response->headers->set('Content-Type', $mimeType);
+            if (! empty($mimeTypes)) {
+                $mimeType = $mimeTypes[0];
+                $response->headers->set('Content-Type', $mimeType);
+            }
+
             $response->setContent(file_get_contents($fileName));
         } else {
             $response->setStatusCode(404);

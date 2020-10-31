@@ -4,6 +4,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use ThenLabs\HttpServer\HttpServer;
 use ThenLabs\HttpServer\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\Response;
 use Monolog\Handler\StreamHandler;
 
 $config = [
@@ -16,7 +17,27 @@ $server = new HttpServer($config);
 $server->getLogger()->pushHandler(new StreamHandler(__DIR__.'/.logs/test.logs'));
 $server->getDispatcher()->addListener(RequestEvent::class, function ($event) {
     if ($event->getRequestUri() == '/custom') {
-        $event->getResponse()->setContent('Custom');
+        $clientSocket = $event->getClientSocket();
+
+        $response = new Response(<<<HTML
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+            </head>
+            <body>
+                <button>Button</button>
+            </body>
+            </html>
+        HTML);
+
+        $text = (string) $response;
+
+        socket_write($clientSocket, $text, strlen($text));
+        socket_close($clientSocket);
+
         $event->stopPropagation();
     }
 });

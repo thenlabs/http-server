@@ -2,6 +2,7 @@
 
 namespace ThenLabs\HttpServer\Tests;
 
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -30,6 +31,10 @@ testCase('FunctionalTest.php', function () {
         } while ($readyState != 'complete');
 
         $driver->get("http://{$_ENV['HOST']}:{$_ENV['PORT']}/custom");
+
+        $buttons = $driver->findElements(WebDriverBy::cssSelector('button'));
+
+        $this->assertCount(1, $buttons);
 
         $logsFileContent = file_get_contents($logsFileName);
 

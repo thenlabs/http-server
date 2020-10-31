@@ -19,7 +19,7 @@ testCase('RequestEventTest.php', function () {
 
             $response = $this->createMock(Response::class);
 
-            $event = new RequestEvent($request, $response);
+            $event = new RequestEvent($request, $response, null);
 
             $this->assertEquals($uri, $event->getRequestUri());
         });
