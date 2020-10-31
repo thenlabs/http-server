@@ -90,6 +90,11 @@ class HttpServer
         }
     }
 
+    public function stop(): void
+    {
+        socket_close($this->socket);
+    }
+
     public function run(): void
     {
         if (! $clientSocket = socket_accept($this->socket)) {
