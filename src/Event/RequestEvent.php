@@ -36,4 +36,15 @@ class RequestEvent extends Event
     {
         $this->response = $response;
     }
+
+    public function getRequestUri(): string
+    {
+        $uri = $this->request->getRequestUri();
+
+        if ('?%0A=' === substr($uri, -5)) {
+            $uri = substr($uri, 0, -5);
+        }
+
+        return $uri;
+    }
 }
