@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Mime\MimeTypes;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Exception;
 use Closure;
 
@@ -30,6 +32,8 @@ class HttpServer
 
     protected $dispatcher;
 
+    protected $logger;
+
     public function __construct(array $config = [])
     {
         $this->config = array_merge($this->defaultConfig, $config);
@@ -45,11 +49,24 @@ class HttpServer
                 Closure::fromCallable([$this, 'defaultListener'])
             );
         }
+
+        $this->logger = new Logger('easy_mails');
+        $this->logger->pushHandler(new StreamHandler(STDOUT));
     }
 
     public function getSocket()
     {
         return $this->socket;
+    }
+
+    public function getLogger(): Logger
+    {
+        return $this->logger;
+    }
+
+    public function setLogger(Logger $logger): void
+    {
+        $this->logger = $logger;
     }
 
     public function getDispatcher(): EventDispatcher
@@ -97,6 +114,13 @@ class HttpServer
         $responseMessage = (string) $response;
 
         socket_write($clientSocket, $responseMessage, strlen($responseMessage));
+
+        $method = $request->getMethod();
+        $uri = $requestEvent->getRequestUri();
+        $status = Response::$statusTexts[$response->getStatusCode()];
+
+        $this->logger->info("{$method}:{$uri}...{$status}");
+
         socket_close($clientSocket);
     }
 

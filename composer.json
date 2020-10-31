@@ -11,6 +11,10 @@
         "symfony/http-foundation": "^4.4",
         "symfony/event-dispatcher": "^4.4",
         "symfony/mime": "^4.4",
+        "monolog/monolog": "^2.1"
+    },
+    "require-dev": {
+        "thenlabs/pyramidal-tests": "^1.1",
         "php-webdriver/webdriver": "^1.8"
     },
     "autoload": {
@@ -22,8 +26,5 @@
         "psr-4": {
             "ThenLabs\\HttpServer\\Tests\\": "tests/"
         }
-    },
-    "require-dev": {
-        "thenlabs/pyramidal-tests": "^1.1"
     }
 }
