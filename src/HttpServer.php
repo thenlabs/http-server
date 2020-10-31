@@ -42,7 +42,7 @@ class HttpServer
         ) {
             $this->dispatcher->addListener(
                 RequestEvent::class,
-                Closure::fromCallable([$this, 'serveFileListener'])
+                Closure::fromCallable([$this, 'defaultListener'])
             );
         }
     }
@@ -104,9 +104,11 @@ class HttpServer
         socket_close($clientSocket);
     }
 
-    protected function serveFileListener(RequestEvent $event): void
+    protected function defaultListener(RequestEvent $event): void
     {
         $request = $event->getRequest();
+        $response = $event->getResponse();
+
         $filePath = $event->getRequestUri();
 
         if ($filePath == '/') {
@@ -114,8 +116,6 @@ class HttpServer
         }
 
         $fileName = $this->config['document_root'].$filePath;
-
-        $response = $event->getResponse();
 
         if (file_exists($fileName)) {
             $fileInfo = pathinfo($fileName);

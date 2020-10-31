@@ -12,16 +12,18 @@ setTestCaseNamespace(__NAMESPACE__);
 setTestCaseClass(TestCase::class);
 
 testCase('RequestEventTest.php', function () {
-    test(function () {
-        $uri = 'http://localhost/'.uniqid('path');
+    testCase('#getRequestUri()', function () {
+        test(function () {
+            $uri = 'http://localhost/'.uniqid('path');
 
-        $request = $this->createMock(Request::class);
-        $request->method('getRequestUri')->willReturn($uri.'?%0A=');
+            $request = $this->createMock(Request::class);
+            $request->method('getRequestUri')->willReturn($uri.'?%0A=');
 
-        $response = $this->createMock(Response::class);
+            $response = $this->createMock(Response::class);
 
-        $event = new RequestEvent($request, $response);
+            $event = new RequestEvent($request, $response);
 
-        $this->assertEquals($uri, $event->getRequestUri());
+            $this->assertEquals($uri, $event->getRequestUri());
+        });
     });
 });
