@@ -21,10 +21,14 @@ testCase('FunctionalTest.php', function () {
 
         $driver->wait()->until(
             WebDriverExpectedCondition::alertIsPresent(),
-            'ThenLabs say: Hello World!'
+            'DOM is ready'
         );
-
         $driver->switchTo()->alert()->accept();
+
+        do {
+            $readyState = $driver->executeScript('return document.readyState');
+        } while ($readyState != 'complete');
+
         $driver->close();
 
         $this->assertTrue(true);
