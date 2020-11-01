@@ -43,7 +43,7 @@ Una vez hecho esto podremos acceder a la URL que hayamos especificado en la conf
 
 >Si usted ha especificado la opción de configuración `document_root` con el mismo valor que mostramos en el ejemplo anterior, usted verá la siguiente página que usamos para pruebas internas.
 
-![](demo.png)
+![](demo.jpg)
 
 Es importante aclarar que por defecto se servirá el archivo de nombre `index.html` que se encuentre en el directorio raíz especificado en la configuración.
 
