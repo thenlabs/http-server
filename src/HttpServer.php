@@ -89,11 +89,15 @@ class HttpServer
         if (! $this->config['blocking']) {
             socket_set_nonblock($this->socket);
         }
+
+        $this->logger->info("Server Started in http://{$this->config['host']}:{$this->config['port']}");
     }
 
     public function stop(): void
     {
         socket_close($this->socket);
+
+        $this->logger->info("Server Stopped.");
     }
 
     public function run(): void
