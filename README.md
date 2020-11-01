@@ -1,6 +1,52 @@
 
 # HttpServer
 
+Implementación de un servidor HTTP escrito totalmente en PHP.
+
+## Instalación.
+
+    $ composer require thenlabs/http-server dev-main
+
+## Uso.
+
+Para ejecutar el servidor es necesario crear un archivo con el siguiente contenido.
+
+>Usted deberá modificar dicho contenido de acuerdo a sus necesidades.
+
+```php
+<?php
+// run-server.php
+
+require __DIR__.'/vendor/autoload.php';
+
+use ThenLabs\HttpServer\HttpServer;
+
+$config = [
+    'host' => '127.0.0.1',
+    'port' => 8080,
+    'document_root' => __DIR__.'/vendor/thenlabs/http-server/tests/document_root',
+];
+
+$server = new HttpServer($config);
+$server->start();
+
+while (true) {
+    $server->run();
+}
+```
+
+Seguidamente se deberá ejecutar el siguiente comando:
+
+    $ php run-server.php
+
+Una vez hecho esto podremos acceder a la URL que hayamos especificado en la configuración y podremos ver la respectiva página.
+
+>Si usted ha especificado la opción de configuración `document_root` con el mismo valor que mostramos en el ejemplo anterior, usted verá la siguiente página que usamos para pruebas internas.
+
+![](demo.png)
+
+Es importante aclarar que por defecto se servirá el archivo de nombre `index.html` que se encuentre en el directorio raíz especificado en la configuración.
+
 ## Análisis de rendimiento.
 
 Con el objetivo de medir el rendimiento del servidor, hemos realizado unas comparaciones con el servidor Apache y el servidor integrado de PHP, sirviendo una página de 939,46KB de tamaño y 7 recursos(imágenes, hojas de estilo, scripts).
@@ -21,7 +67,7 @@ Sobre cada servidor se ejecutó la página unas 20 veces y se obtuvieron los sig
 <table style="text-align: center">
     <thead>
         <tr>
-            <th>Server</th>
+            <th></th>
             <th>HttpServer (ms)</th>
             <th>Built In Server (ms)</th>
             <th>Apache 2.4.41 (ms)</th>
@@ -58,3 +104,4 @@ Sobre cada servidor se ejecutó la página unas 20 veces y se obtuvieron los sig
         </tr>
     </tfoot>
 </table>
+
