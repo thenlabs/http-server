@@ -22,7 +22,7 @@ class HttpServer
         'host' => '127.0.0.1',
         'port' => 80,
         'blocking' => false,
-        'backlog' => 0,
+        'backlog' => 100,
         'document_root' => null,
     ];
 
