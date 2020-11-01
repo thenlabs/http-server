@@ -51,7 +51,7 @@ class HttpServer
             );
         }
 
-        $this->logger = new Logger('easy_mails');
+        $this->logger = new Logger('http_server');
         $this->logger->pushHandler(new StreamHandler(STDOUT));
     }
 
