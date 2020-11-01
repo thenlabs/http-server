@@ -1,7 +1,7 @@
 
 # HttpServer
 
-Implementación de un servidor HTTP escrito totalmente en PHP.
+Implementación de un servidor [HTTP](https://es.wikipedia.org/wiki/Protocolo_de_transferencia_de_hipertexto) escrito totalmente en [PHP](https://es.wikipedia.org/wiki/PHP).
 
 ## Instalación.
 
@@ -53,7 +53,7 @@ Como usted podrá comprobar, por defecto se mostrará en la consola el resultado
 
 ![](console-logs.png)
 
-Gracias a que todos los registros son creados con ayuda de la popular librería Monolog, es posible personalizar todo el proceso. El siguiente ejemplo muestra como configurar el servidor para que guarde en un archivo todos los registros.
+Gracias a que todos los registros son creados con ayuda de la popular librería [Monolog](https://github.com/Seldaek/monolog), es posible personalizar todo el proceso. El siguiente ejemplo muestra como configurar el servidor para que guarde en un archivo todos los registros.
 
 ```php
 <?php
