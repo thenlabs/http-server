@@ -47,6 +47,64 @@ Una vez hecho esto podremos acceder a la URL que hayamos especificado en la conf
 
 Es importante aclarar que por defecto se servirá el archivo de nombre `index.html` que se encuentre en el directorio raíz especificado en la configuración.
 
+### Configurando los registros.
+
+Como usted podrá comprobar, por defecto se mostrará en la consola el resultado de todas las peticiones que se le hagan al servidor tal y como se muestra en la siguiente imagen:
+
+![](console-logs.png)
+
+Gracias a que todos los registros son creados con ayuda de la popular librería Monolog, es posible personalizar todo el proceso. El siguiente ejemplo muestra como configurar el servidor para que guarde en un archivo todos los registros.
+
+```php
+<?php
+
+// ...
+use Monolog\Handler\StreamHandler;
+
+// ...
+$server->getLogger()->pushHandler(new StreamHandler('/path/to/file.logs'));
+
+```
+
+### Manejando las solicitudes.
+
+Por defecto el servidor solo será capaz de servir los archivos web que se encuentren en el directorio especificado en su configuración. No obstante, también es posible configurarlo para manejar de manera personalizada ciertas solicitudes.
+
+El siguiente ejemplo, muestra como devolver una página personalizada cuando se acceda a la ruta `/custom`.
+
+```php
+<?php
+
+// ...
+use ThenLabs\HttpServer\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\Response;
+
+// ...
+$server->getDispatcher()->addListener(RequestEvent::class, function ($event) {
+    if ($event->getRequestUri() == '/custom') {
+        $response = new Response(<<<HTML
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Custom Page</title>
+            </head>
+            <body>
+                ...
+            </body>
+            </html>
+        HTML);
+
+        $event->setResponse($response);
+
+        $event->stopPropagation(); // Required.
+    }
+});
+```
+
+>También es importante mencionar que a través del objeto del evento es posible acceder al *socket* del cliente a través del método `$event->getClientSocket()`.
+
 ## Análisis de rendimiento.
 
 Con el objetivo de medir el rendimiento del servidor, hemos realizado unas comparaciones con el servidor Apache y el servidor integrado de PHP, sirviendo una página de 939,46KB de tamaño y 7 recursos(imágenes, hojas de estilo, scripts).
