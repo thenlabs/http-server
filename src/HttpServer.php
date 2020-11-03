@@ -21,7 +21,7 @@ class HttpServer
     protected $defaultConfig = [
         'host' => '127.0.0.1',
         'port' => 80,
-        'blocking' => false,
+        'blocking' => true,
         'backlog' => 100,
         'document_root' => null,
     ];
