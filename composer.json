@@ -11,11 +11,13 @@
         "symfony/http-foundation": "^4.4",
         "symfony/event-dispatcher": "^4.4",
         "symfony/mime": "^4.4",
+        "symfony/routing": "^4.4",
         "monolog/monolog": "^2.1"
     },
     "require-dev": {
         "thenlabs/pyramidal-tests": "^1.1",
-        "php-webdriver/webdriver": "^1.8"
+        "php-webdriver/webdriver": "^1.8",
+        "friendsofphp/php-cs-fixer": "^3.2"
     },
     "autoload": {
         "psr-4": {

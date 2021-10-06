@@ -32,7 +32,11 @@ class Utils
 
         preg_match_all($headersPattern, $messageHeader, $matchedHeaders);
 
-        $server = [];
+        $protocolVersionParts = explode('/', $protocolVersion);
+
+        $server = [
+            'SERVER_PROTOCOL' => $protocolVersionParts[1],
+        ];
 
         foreach ($matchedHeaders[0] as $key => $value) {
             $headerName = 'HTTP_'.strtoupper(trim($matchedHeaders[1][$key]));
@@ -49,5 +53,16 @@ class Utils
         }
 
         return Request::create($uri, $method, $parameters, [], [], $server, $messageContent);
+    }
+
+    public static function getRequestUri(Request $request): string
+    {
+        $uri = $request->getRequestUri();
+
+        if ('?%0A=' === substr($uri, -5)) {
+            $uri = substr($uri, 0, -5);
+        }
+
+        return $uri;
     }
 }

@@ -30,10 +30,14 @@ testCase('FunctionalTest.php', function () {
             $readyState = $driver->executeScript('return document.readyState');
         } while ($readyState != 'complete');
 
-        $driver->get("http://{$_ENV['HOST']}:{$_ENV['PORT']}/custom");
+        $id = mt_rand(1, 10);
+        $title = uniqid();
 
-        $buttons = $driver->findElements(WebDriverBy::cssSelector('button'));
+        $driver->get("http://{$_ENV['HOST']}:{$_ENV['PORT']}/custom/{$id}?title={$title}");
 
+        $buttons = $driver->findElements(WebDriverBy::cssSelector('button[data-id="'.$id.'"]'));
+
+        $this->assertEquals($title, $driver->getTitle());
         $this->assertCount(1, $buttons);
 
         $logsFileContent = file_get_contents($logsFileName);
@@ -47,7 +51,7 @@ testCase('FunctionalTest.php', function () {
             'GET:/img/image.png...OK',
             'GET:/img/image.jpeg...OK',
             'GET:/favicon.ico...OK',
-            'GET:/custom...OK',
+            "GET:/custom/{$id}?title={$title}...OK",
         ];
 
         foreach ($expectedLines as $line) {

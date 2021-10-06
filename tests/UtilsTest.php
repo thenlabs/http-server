@@ -28,7 +28,7 @@ testCase('UtilsTest.php', function () {
 
             $this->assertEquals('GET', $request->getMethod());
             $this->assertEquals('/', $request->getPathInfo());
-            $this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
+            $this->assertEquals('1.1', $request->getProtocolVersion());
 
             $expectedHeaders = [
                 'host' => ['localhost'],
@@ -62,7 +62,7 @@ testCase('UtilsTest.php', function () {
 
             $this->assertEquals('POST', $request->getMethod());
             $this->assertEquals('/cgi-bin/process.cgi/', $request->getPathInfo());
-            $this->assertEquals('HTTP/1.1', $request->getProtocolVersion());
+            $this->assertEquals('1.1', $request->getProtocolVersion());
 
             $expectedHeaders = [
                 'user-agent' => ['Mozilla/4.0 (compatible; MSIE5.01; Windows NT)'],

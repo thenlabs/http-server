@@ -3,33 +3,33 @@ declare(strict_types=1);
 
 namespace ThenLabs\HttpServer\Event;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @author Andy Daniel Navarro Taño <andaniel05@gmail.com>
  */
-class RequestEvent extends Event
+class ResponseEvent extends Event
 {
     /**
-     * @var Request
+     * @var Response
      */
-    protected $request;
+    protected $response;
 
     /**
      * @var resource
      */
     protected $clientSocket;
 
-    public function __construct(Request $request, $clientSocket)
+    public function __construct(Response $response, $clientSocket)
     {
-        $this->request = $request;
+        $this->response = $response;
         $this->clientSocket = $clientSocket;
     }
 
-    public function getRequest(): Request
+    public function getResponse(): Response
     {
-        return $this->request;
+        return $this->response;
     }
 
     public function getClientSocket()

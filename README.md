@@ -1,17 +1,17 @@
 
 # HttpServer
 
-Implementación de un servidor [HTTP](https://es.wikipedia.org/wiki/Protocolo_de_transferencia_de_hipertexto) escrito totalmente en [PHP](https://es.wikipedia.org/wiki/PHP).
+A [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) server written in [PHP](https://en.wikipedia.org/wiki/PHP) with help of the Symfony Components.
 
-## Instalación.
+## Installation.
 
-    $ composer require thenlabs/http-server dev-main
+    $ composer require thenlabs/http-server
 
-## Uso.
+## Usage.
 
-Para ejecutar el servidor es necesario crear un archivo con el siguiente contenido.
+Create a file with the next example content:
 
->Usted deberá modificar dicho contenido de acuerdo a sus necesidades.
+>You should change the content according to your needs.
 
 ```php
 <?php
@@ -35,25 +35,51 @@ while (true) {
 }
 ```
 
-Seguidamente se deberá ejecutar el siguiente comando:
+This file should be executed like that:
 
     $ php run-server.php
 
-Una vez hecho esto podremos acceder a la URL que hayamos especificado en la configuración y podremos ver la respectiva página.
+Once does it, we can navigate to the URL and we will see the respectively page.
 
->Si usted ha especificado la opción de configuración `document_root` con el mismo valor que mostramos en el ejemplo anterior, usted verá la siguiente página que usamos para pruebas internas.
+>In our example, we are serving the `index.html` file which is stored within the `tests/document_root` directory.
 
 ![](demo.jpg)
 
-Es importante aclarar que por defecto se servirá el archivo de nombre `index.html` que se encuentre en el directorio raíz especificado en la configuración.
+### Creating custom routes.
 
-### Configurando los registros.
+The next example shown the way to creating a custom route.
 
-Como usted podrá comprobar, por defecto se mostrará en la consola el resultado de todas las peticiones que se le hagan al servidor tal y como se muestra en la siguiente imagen:
+```php
+<?php
+
+use Symfony\Component\Routing\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+// ...
+
+$articleRoute = new Route('/article/{id}', [
+    '_controller' => function (Request $request, array $parameters) {
+        return new Response("This is the article {$parameters['id']}");
+    },
+]);
+
+$server->addRoute('article', $articleRoute);
+
+// ...
+```
+
+### Using the logs.
+
+Like you can will verify, by default are will shows in the console the result of all server requests.
 
 ![](console-logs.png)
 
 Gracias a que todos los registros son creados con ayuda de la popular librería [Monolog](https://github.com/Seldaek/monolog), es posible personalizar todo el proceso. El siguiente ejemplo muestra como configurar el servidor para que guarde en un archivo todos los registros.
+
+The logs are created with help of the popular [Monolog](https://github.com/Seldaek/monolog) library.
+
+The next example showns a way to put the logs in a file.
 
 ```php
 <?php
@@ -63,103 +89,20 @@ use Monolog\Handler\StreamHandler;
 
 // ...
 $server->getLogger()->pushHandler(new StreamHandler('/path/to/file.logs'));
-
 ```
 
-### Manejando las solicitudes.
+## Development.
 
-Por defecto el servidor solo será capaz de servir los archivos web que se encuentren en el directorio especificado en su configuración. No obstante, también es posible configurarlo para manejar de manera personalizada ciertas solicitudes.
+### Running the tests.
 
-El siguiente ejemplo, muestra como devolver una página personalizada cuando se acceda a la ruta `/custom`.
+Start the selenium server.
 
-```php
-<?php
+    $ java -jar path/to/selenium-server-standalone-x.y.z.jar
 
-// ...
-use ThenLabs\HttpServer\Event\RequestEvent;
-use Symfony\Component\HttpFoundation\Response;
+Start the example inside the tests directory.
 
-// ...
-$server->getDispatcher()->addListener(RequestEvent::class, function ($event) {
-    if ($event->getRequestUri() == '/custom') {
-        $response = new Response(<<<HTML
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Custom Page</title>
-            </head>
-            <body>
-                ...
-            </body>
-            </html>
-        HTML);
+    $ php tests/run-server.php
 
-        $event->setResponse($response);
+Run PHPUnit.
 
-        $event->stopPropagation(); // Required.
-    }
-});
-```
-
->También es importante mencionar que a través del objeto del evento es posible acceder al *socket* del cliente a través del método `$event->getClientSocket()`.
-
-## Análisis de rendimiento.
-
-Con el objetivo de medir el rendimiento del servidor, hemos realizado unas comparaciones con el servidor Apache y el servidor integrado de PHP, sirviendo una página de 939,46KB de tamaño y 7 recursos(imágenes, hojas de estilo, scripts).
-
-Las pruebas fueron ejecutadas sobre el siguiente entorno:
-
-<table>
-    <tr><td>Versión de PHP</td><td>7.4.3</td></tr>
-    <tr><td>Sistema Operativo</td><td>Ubuntu 20.04 (64 bits)</td></tr>
-    <tr><td>Procesador</td><td>i7-8750H</td></tr>
-    <tr><td>Memoria RAM</td><td>16GB</td></tr>
-</table>
-
-Sobre cada servidor se ejecutó la página unas 20 veces y se obtuvieron los siguientes resultados.
-
-### Resultados:
-
-<table style="text-align: center">
-    <thead>
-        <tr>
-            <th></th>
-            <th>HttpServer (ms)</th>
-            <th>Built In Server (ms)</th>
-            <th>Apache 2.4.41 (ms)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr><td></td><td>106</td><td>148</td><td>141</td></tr>
-        <tr><td></td><td>84</td><td>128</td><td>116</td></tr>
-        <tr><td></td><td>98</td><td>95</td><td>107</td></tr>
-        <tr><td></td><td>146</td><td>94</td><td>86</td></tr>
-        <tr><td></td><td>137</td><td>116</td><td>97</td></tr>
-        <tr><td></td><td>140</td><td>124</td><td>79</td></tr>
-        <tr><td></td><td>112</td><td>82</td><td>105</td></tr>
-        <tr><td></td><td>112</td><td>93</td><td>85</td></tr>
-        <tr><td></td><td>94</td><td>98</td><td>73</td></tr>
-        <tr><td></td><td>97</td><td>73</td><td>86</td></tr>
-        <tr><td></td><td>106</td><td>85</td><td>53</td></tr>
-        <tr><td></td><td>95</td><td>133</td><td>138</td></tr>
-        <tr><td></td><td>99</td><td>139</td><td>139</td></tr>
-        <tr><td></td><td>98</td><td>119</td><td>137</td></tr>
-        <tr><td></td><td>135</td><td>107</td><td>134</td></tr>
-        <tr><td></td><td>148</td><td>100</td><td>138</td></tr>
-        <tr><td></td><td>125</td><td>97</td><td>142</td></tr>
-        <tr><td></td><td>108</td><td>95</td><td>105</td></tr>
-        <tr><td></td><td>97</td><td>108</td><td>81</td></tr>
-        <tr><td></td><td>107</td><td>92</td><td>79</td></tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>Average</th>
-            <th>112,2 ms</th>
-            <th>106,3 ms</th>
-            <th>106,05 ms</th>
-        </tr>
-    </tfoot>
-</table>
-
+    $ ./vendor/bin/phpunit

@@ -2,10 +2,11 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use ThenLabs\HttpServer\HttpServer;
-use ThenLabs\HttpServer\Event\RequestEvent;
-use Symfony\Component\HttpFoundation\Response;
 use Monolog\Handler\StreamHandler;
+use ThenLabs\HttpServer\HttpServer;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 $config = [
     'host' => $argv[1] ?? '127.0.0.1',
@@ -15,32 +16,28 @@ $config = [
 
 $server = new HttpServer($config);
 $server->getLogger()->pushHandler(new StreamHandler(__DIR__.'/.logs/test.logs'));
-$server->getDispatcher()->addListener(RequestEvent::class, function ($event) {
-    if ($event->getRequestUri() == '/custom') {
-        $clientSocket = $event->getClientSocket();
 
-        $response = new Response(<<<HTML
+$server->addRoute('custom', new Route('/custom/{id}', [
+    'methods' => ['GET'],
+    '_controller' => function (Request $request, array $parameters): Response {
+        $id = $parameters['id'];
+        $title = $request->query->get('title');
+
+        return new Response('
             <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Document</title>
+                <title>'.$title.'</title>
             </head>
             <body>
-                <button>Button</button>
+                <button data-id="'.$id.'">Button</button>
             </body>
             </html>
-        HTML);
-
-        $text = (string) $response;
-
-        socket_write($clientSocket, $text, strlen($text));
-        socket_close($clientSocket);
-
-        $event->stopPropagation();
-    }
-});
+        ');
+    },
+]));
 
 $server->start();
 
