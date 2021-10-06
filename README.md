@@ -75,8 +75,6 @@ Like you can will verify, by default are will shows in the console the result of
 
 ![](console-logs.png)
 
-Gracias a que todos los registros son creados con ayuda de la popular librería [Monolog](https://github.com/Seldaek/monolog), es posible personalizar todo el proceso. El siguiente ejemplo muestra como configurar el servidor para que guarde en un archivo todos los registros.
-
 The logs are created with help of the popular [Monolog](https://github.com/Seldaek/monolog) library.
 
 The next example showns a way to put the logs in a file.
