@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace ThenLabs\HttpServer;
 
 use Exception;
-use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Mime\MimeTypes;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Monolog\Logger;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 use ThenLabs\HttpServer\Event\RequestEvent;
 use ThenLabs\HttpServer\Event\ResponseEvent;
 
@@ -32,6 +32,10 @@ class HttpServer
         'blocking' => true,
         'document_root' => null,
         'logger_name' => 'thenlabs_http_server',
+        'log_messages' => [
+            'server_started' => 'Server Started in http://%s:%d',
+            'server_stopped' => 'Server Stopped.',
+        ],
         'timeout' => -1,
         'fread_length' => 1500,
     ];
@@ -130,14 +134,18 @@ class HttpServer
             stream_set_blocking($this->socket, false);
         }
 
-        $this->logger->info("Server Started in http://{$this->config['host']}:{$this->config['port']}");
+        $this->logger->info(sprintf(
+            $this->config['log_messages']['server_started'],
+            $this->config['host'],
+            $this->config['port'],
+        ));
     }
 
     public function stop(): void
     {
         fclose($this->socket);
 
-        $this->logger->info("Server Stopped.");
+        $this->logger->info(sprintf($this->config['log_messages']['server_stopped']));
     }
 
     public function run(): void

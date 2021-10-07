@@ -3,10 +3,10 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use Monolog\Handler\StreamHandler;
-use ThenLabs\HttpServer\HttpServer;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Route;
+use ThenLabs\HttpServer\HttpServer;
 
 $config = [
     'host' => $argv[1] ?? '127.0.0.1',
