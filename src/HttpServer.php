@@ -33,7 +33,7 @@ class HttpServer
         'document_root' => null,
         'logger_name' => 'thenlabs_http_server',
         'log_messages' => [
-            'server_started' => 'Server Started in http://%s:%d',
+            'server_started' => 'Server Started in http://%HOST%:%PORT%',
             'server_stopped' => 'Server Stopped.',
         ],
         'timeout' => -1,
@@ -126,6 +126,21 @@ class HttpServer
         return $socket;
     }
 
+    protected function getLogMessage(string $key, array $parameters = []): ?string
+    {
+        if (! isset($this->config['log_messages'][$key]) ||
+            ! is_string($this->config['log_messages'][$key])
+        ) {
+            return null;
+        }
+
+        return str_replace(
+            array_keys($parameters),
+            array_values($parameters),
+            $this->config['log_messages'][$key]
+        );
+    }
+
     public function start(): void
     {
         $this->socket = $this->createSocket("tcp://{$this->config['host']}:{$this->config['port']}");
@@ -134,18 +149,17 @@ class HttpServer
             stream_set_blocking($this->socket, false);
         }
 
-        $this->logger->info(sprintf(
-            $this->config['log_messages']['server_started'],
-            $this->config['host'],
-            $this->config['port'],
-        ));
+        $this->logger->info($this->getLogMessage('server_started', [
+            '%HOST%' => $this->config['host'],
+            '%PORT%' => $this->config['port'],
+        ]));
     }
 
     public function stop(): void
     {
         fclose($this->socket);
 
-        $this->logger->info(sprintf($this->config['log_messages']['server_stopped']));
+        $this->logger->info($this->getLogMessage('server_stopped'));
     }
 
     public function run(): void
@@ -164,6 +178,11 @@ class HttpServer
             return;
         }
 
+        $this->handleRequest($request, $clientSocket);
+    }
+
+    protected function handleRequest(Request $request, $clientSocket): void
+    {
         $requestEvent = new RequestEvent($request, $clientSocket);
         $this->dispatcher->dispatch($requestEvent);
         $request = $requestEvent->getRequest();
