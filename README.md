@@ -47,8 +47,10 @@ Once does it, we can navigate to the URL and we will see the respectively page.
 
 ### Creating custom routes.
 
-The next example shown the way to creating a custom route.
+The HttpServer use the [Symfony Routing Component](https://github.com/symfony/routing) for handle the routing, therefore, you can use all the his posibilities.
 
+The next example shown the way to creating a custom route.
+ 
 ```php
 <?php
 
