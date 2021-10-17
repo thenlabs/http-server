@@ -3,6 +3,8 @@
 
 A [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) server written in [PHP](https://en.wikipedia.org/wiki/PHP) with help of the Symfony Components.
 
+>If you like this project gift us a ⭐.
+
 ## Installation.
 
     $ composer require thenlabs/http-server
