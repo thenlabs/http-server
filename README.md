@@ -52,7 +52,7 @@ Once does it, we can navigate to the URL and we will see the respectively page.
 The HttpServer use the [Symfony Routing Component](https://github.com/symfony/routing) for handle the routing, therefore, you can use all the his possibilities.
 
 The next example shown the way to creating a custom route.
- 
+
 ```php
 <?php
 
@@ -101,10 +101,6 @@ Start the selenium server.
 
     $ java -jar path/to/selenium-server-standalone-x.y.z.jar
 
-Start the example inside the tests directory.
-
-    $ php tests/run-server.php
-
 Run PHPUnit.
 
-    $ ./vendor/bin/phpunit
+    $ ./vendor/bin/pyramidal

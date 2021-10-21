@@ -1,8 +1,4 @@
 <phpunit bootstrap="bootstrap.php">
-    <extensions>
-        <extension class="ThenLabs\PyramidalTests\Extension"></extension>
-    </extensions>
-
     <php>
         <env name="PYRAMIDAL_ONLY" value="1"></env>
         <env name="SELENIUM_SERVER" value="http://localhost:4444/wd/hub"></env>
@@ -11,8 +7,11 @@
     </php>
 
     <testsuites>
-        <testsuite name="Main">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>tests/Functional</directory>
         </testsuite>
     </testsuites>
 </phpunit>

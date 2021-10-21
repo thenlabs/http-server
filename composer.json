@@ -15,9 +15,11 @@
         "monolog/monolog": "^2.1"
     },
     "require-dev": {
-        "thenlabs/pyramidal-tests": "^1.1",
+        "thenlabs/pyramidal-tests": "2.0.x-dev",
         "php-webdriver/webdriver": "^1.8",
-        "friendsofphp/php-cs-fixer": "^3.2"
+        "friendsofphp/php-cs-fixer": "^3.2",
+        "dms/phpunit-arraysubset-asserts": "^0.3.1",
+        "symfony/process": "^5.3"
     },
     "autoload": {
         "psr-4": {

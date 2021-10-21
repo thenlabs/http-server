@@ -1,11 +1,8 @@
 <?php
 
-namespace ThenLabs\HttpServer\Tests;
-
 use ThenLabs\HttpServer\Utils;
 
-setTestCaseNamespace(__NAMESPACE__);
-setTestCaseClass(TestCase::class);
+setTestCaseClass('ThenLabs\HttpServer\Tests\TestCase');
 
 testCase('UtilsTest.php', function () {
     testCase('#createRequestFromHttpMessage()', function () {

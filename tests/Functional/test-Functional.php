@@ -6,11 +6,29 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
+use Symfony\Component\Process\Process;
 
-setTestCaseNamespace(__NAMESPACE__);
-setTestCaseClass(TestCase::class);
+setTestCaseClass('ThenLabs\HttpServer\Tests\TestCase');
 
 testCase('FunctionalTest.php', function () {
+    staticProperty('serverProcess');
+
+    setUpBeforeClassOnce(function () {
+        // empty the logs file.
+        file_put_contents(LOGS_FILE, '');
+
+        static::$serverProcess = new Process([
+            'php',
+            'tests/Functional/run-server.php',
+            $_ENV['HOST'],
+            $_ENV['PORT']]
+        );
+
+        static::$serverProcess->start();
+
+        sleep(1);
+    });
+
     test(function () {
         $logsFileName = __DIR__.'/.logs/test.logs';
         file_put_contents($logsFileName, '');
@@ -55,9 +73,13 @@ testCase('FunctionalTest.php', function () {
         ];
 
         foreach ($expectedLines as $line) {
-            $this->assertContains($line, $logsFileContent);
+            $this->assertStringContainsString($line, $logsFileContent);
         }
 
         $driver->close();
+    });
+
+    tearDownAfterClassOnce(function () {
+        static::$serverProcess->stop();
     });
 });
