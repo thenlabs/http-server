@@ -17,7 +17,8 @@ testCase('FunctionalTest.php', function () {
         // empty the logs file.
         file_put_contents(LOGS_FILE, '');
 
-        static::$serverProcess = new Process([
+        static::$serverProcess = new Process(
+            [
             'php',
             'tests/Functional/run-server.php',
             $_ENV['HOST'],

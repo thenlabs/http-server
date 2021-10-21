@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a19dd938abbc9614ddadf2eabec56d3",
+    "content-hash": "d6a5d7d7181c22048020ad83ce6740ed",
     "packages": [
         {
             "name": "monolog/monolog",
@@ -1091,6 +1091,95 @@
                 }
             ],
             "time": "2021-08-04T21:42:42+00:00"
+        },
+        {
+            "name": "thenlabs/socket-server",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thenlabs/socket-server.git",
+                "reference": "53fcbff13980142039b2d9b76cbbf6d0665232bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thenlabs/socket-server/zipball/53fcbff13980142039b2d9b76cbbf6d0665232bd",
+                "reference": "53fcbff13980142039b2d9b76cbbf6d0665232bd",
+                "shasum": ""
+            },
+            "require": {
+                "monolog/monolog": "^2.1",
+                "symfony/event-dispatcher": ">=4.4",
+                "thenlabs/task-loop": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "symfony/process": "^5.3",
+                "thenlabs/pyramidal-tests": "2.0.x-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ThenLabs\\SocketServer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Daniel Navarro Taño",
+                    "email": "andaniel05@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/thenlabs/socket-server/issues",
+                "source": "https://github.com/thenlabs/socket-server/tree/v1.1.1"
+            },
+            "time": "2021-10-20T13:19:21+00:00"
+        },
+        {
+            "name": "thenlabs/task-loop",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thenlabs/task-loop.git",
+                "reference": "1e94e04957743f628dc17f6be19a4dde7e2748ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thenlabs/task-loop/zipball/1e94e04957743f628dc17f6be19a4dde7e2748ae",
+                "reference": "1e94e04957743f628dc17f6be19a4dde7e2748ae",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/event-dispatcher": ">=4.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "thenlabs/pyramidal-tests": "2.0.x-dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ThenLabs\\TaskLoop\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Daniel Navarro Taño",
+                    "email": "andaniel05@gmail.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/thenlabs/task-loop/issues",
+                "source": "https://github.com/thenlabs/task-loop/tree/v1.0.0"
+            },
+            "time": "2021-10-11T14:13:51+00:00"
         }
     ],
     "packages-dev": [

@@ -12,7 +12,8 @@
         "symfony/event-dispatcher": ">=4.4",
         "symfony/mime": ">=4.4",
         "symfony/routing": ">=4.4",
-        "monolog/monolog": "^2.1"
+        "monolog/monolog": "^2.1",
+        "thenlabs/socket-server": "^1.1"
     },
     "require-dev": {
         "thenlabs/pyramidal-tests": "2.0.x-dev",

@@ -4,9 +4,6 @@ declare(strict_types=1);
 namespace ThenLabs\HttpServer;
 
 use Exception;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\MimeTypes;
@@ -17,49 +14,14 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use ThenLabs\HttpServer\Event\RequestEvent;
 use ThenLabs\HttpServer\Event\ResponseEvent;
+use ThenLabs\SocketServer\Event\DataEvent;
+use ThenLabs\SocketServer\SocketServer;
 
 /**
  * @author Andy Daniel Navarro Taño <andaniel05@gmail.com>
  */
-class HttpServer
+class HttpServer extends SocketServer
 {
-    /**
-     * @var array
-     */
-    protected $defaultConfig = [
-        'host' => '0.0.0.0',
-        'port' => 80,
-        'blocking' => true,
-        'document_root' => null,
-        'logger_name' => 'thenlabs_http_server',
-        'log_messages' => [
-            'server_started' => 'Server Started in http://%HOST%:%PORT%',
-            'server_stopped' => 'Server Stopped.',
-        ],
-        'timeout' => -1,
-        'fread_length' => 1500,
-    ];
-
-    /**
-     * @var array
-     */
-    protected $config;
-
-    /**
-     * @var resource
-     */
-    protected $socket;
-
-    /**
-     * @var EventDispatcher
-     */
-    protected $dispatcher;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
     /**
      * @var RouteCollection
      */
@@ -72,27 +34,14 @@ class HttpServer
 
     public function __construct(array $config = [])
     {
-        $this->config = array_merge($this->defaultConfig, $config);
-        $this->dispatcher = new EventDispatcher();
+        $host = $config['host'] ?? '127.0.0.1';
+        $port = $config['port'] ?? 80;
+
+        $config['socket'] = "tcp://{$host}:{$port}";
+
+        parent::__construct($config);
+
         $this->routes = new RouteCollection();
-
-        $this->logger = new Logger($this->config['logger_name']);
-        $this->logger->pushHandler(new StreamHandler(STDOUT));
-    }
-
-    public function getSocket()
-    {
-        return $this->socket;
-    }
-
-    public function getLogger(): Logger
-    {
-        return $this->logger;
-    }
-
-    public function setLogger(Logger $logger): void
-    {
-        $this->logger = $logger;
     }
 
     public function getRoutes(): RouteCollection
@@ -110,73 +59,16 @@ class HttpServer
         $this->routes->add($name, $route);
     }
 
-    public function getDispatcher(): EventDispatcher
+    public function onData(DataEvent $event): void
     {
-        return $this->dispatcher;
-    }
-
-    protected function createSocket(string $address)
-    {
-        $socket = stream_socket_server($address, $errorCode, $errorMessage);
-
-        if (! $socket) {
-            throw new Exception\HttpServerException($errorMessage, $errorCode);
-        }
-
-        return $socket;
-    }
-
-    protected function getLogMessage(string $key, array $parameters = []): ?string
-    {
-        if (! isset($this->config['log_messages'][$key]) ||
-            ! is_string($this->config['log_messages'][$key])
-        ) {
-            return null;
-        }
-
-        return str_replace(
-            array_keys($parameters),
-            array_values($parameters),
-            $this->config['log_messages'][$key]
-        );
-    }
-
-    public function start(): void
-    {
-        $this->socket = $this->createSocket("tcp://{$this->config['host']}:{$this->config['port']}");
-
-        if (! $this->config['blocking']) {
-            stream_set_blocking($this->socket, false);
-        }
-
-        $this->logger->info($this->getLogMessage('server_started', [
-            '%HOST%' => $this->config['host'],
-            '%PORT%' => $this->config['port'],
-        ]));
-    }
-
-    public function stop(): void
-    {
-        fclose($this->socket);
-
-        $this->logger->info($this->getLogMessage('server_stopped'));
-    }
-
-    public function run(): void
-    {
-        if (! $clientSocket = stream_socket_accept($this->socket, $this->config['timeout'])) {
-            return;
-        }
-
-        if (! $httpRequestMessage = fread($clientSocket, $this->config['fread_length'])) {
-            return;
-        }
-
-        $request = Utils::createRequestFromHttpMessage($httpRequestMessage);
+        $data = $event->getData();
+        $request = Utils::createRequestFromHttpMessage($data);
 
         if (! $request instanceof Request) {
             return;
         }
+
+        $clientSocket = $event->getConnection()->getSocket();
 
         $this->handleRequest($request, $clientSocket);
     }
