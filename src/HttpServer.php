@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use ThenLabs\HttpServer\Event\RequestEvent;
 use ThenLabs\HttpServer\Event\ResponseEvent;
+use ThenLabs\SocketServer\Connection;
 use ThenLabs\SocketServer\Event\DataEvent;
 use ThenLabs\SocketServer\SocketServer;
 
@@ -170,14 +171,12 @@ class HttpServer extends SocketServer
             return;
         }
 
-        $clientSocket = $event->getConnection()->getSocket();
-
-        $this->handleRequest($request, $clientSocket);
+        $this->handleRequest($request, $event->getConnection());
     }
 
-    protected function handleRequest(Request $request, $clientSocket): void
+    protected function handleRequest(Request $request, Connection $connection): void
     {
-        $requestEvent = new RequestEvent($request, $clientSocket);
+        $requestEvent = new RequestEvent($request, $connection);
         $this->dispatcher->dispatch($requestEvent);
         $request = $requestEvent->getRequest();
 
@@ -208,7 +207,7 @@ class HttpServer extends SocketServer
 
                 $response->setContent(file_get_contents($fileName));
 
-                $this->sendResponse($response, $clientSocket);
+                $this->sendResponse($response, $connection);
                 return;
             }
         }
@@ -220,7 +219,7 @@ class HttpServer extends SocketServer
             $parameters = $matcher->matchRequest($request);
         } catch (ResourceNotFoundException $exception) {
             $response = new Response('', 404);
-            $this->sendResponse($response, $clientSocket);
+            $this->sendResponse($response, $connection);
             return;
         }
 
@@ -228,7 +227,7 @@ class HttpServer extends SocketServer
             ! is_callable($parameters['_controller'])
         ) {
             $response = new Response('', 404);
-            $this->sendResponse($response, $clientSocket);
+            $this->sendResponse($response, $connection);
             return;
         }
 
@@ -238,19 +237,17 @@ class HttpServer extends SocketServer
             throw new Exception\InvalidResponseException($parameters['_route']);
         }
 
-        $this->sendResponse($response, $clientSocket);
+        $this->sendResponse($response, $connection);
         return;
     }
 
-    protected function sendResponse(Response $response, $clientSocket): void
+    protected function sendResponse(Response $response, Connection $connection): void
     {
-        $responseEvent = new ResponseEvent($response, $clientSocket);
+        $responseEvent = new ResponseEvent($response, $connection);
         $this->dispatcher->dispatch($responseEvent);
         $response = $responseEvent->getResponse();
 
-        $responseMessage = (string) $response;
-
-        fwrite($clientSocket, $responseMessage, strlen($responseMessage));
+        $connection->write((string) $response);
 
         $method = $this->currentRequest->getMethod();
         $uri = Utils::getRequestUri($this->currentRequest);
@@ -258,7 +255,8 @@ class HttpServer extends SocketServer
 
         $this->logger->info("{$method}:{$uri}...{$status}");
 
-        fclose($clientSocket);
+        $connection->close();
+
         $this->currentRequest = null;
     }
 }

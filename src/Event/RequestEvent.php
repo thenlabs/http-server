@@ -5,6 +5,7 @@ namespace ThenLabs\HttpServer\Event;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\EventDispatcher\Event;
+use ThenLabs\SocketServer\Connection;
 
 /**
  * @author Andy Daniel Navarro Taño <andaniel05@gmail.com>
@@ -17,14 +18,14 @@ class RequestEvent extends Event
     protected $request;
 
     /**
-     * @var resource
+     * @var Connection
      */
-    protected $clientSocket;
+    protected $connection;
 
-    public function __construct(Request $request, $clientSocket)
+    public function __construct(Request $request, Connection $connection)
     {
         $this->request = $request;
-        $this->clientSocket = $clientSocket;
+        $this->connection = $connection;
     }
 
     public function getRequest(): Request
@@ -32,8 +33,8 @@ class RequestEvent extends Event
         return $this->request;
     }
 
-    public function getClientSocket()
+    public function getConnection(): Connection
     {
-        return $this->clientSocket;
+        return $this->connection;
     }
 }
