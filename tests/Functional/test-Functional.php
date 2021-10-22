@@ -10,7 +10,7 @@ use Symfony\Component\Process\Process;
 
 setTestCaseClass('ThenLabs\HttpServer\Tests\TestCase');
 
-testCase('FunctionalTest.php', function () {
+testCase(function () {
     staticProperty('serverProcess');
 
     setUpBeforeClassOnce(function () {

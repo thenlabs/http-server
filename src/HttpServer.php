@@ -59,6 +59,108 @@ class HttpServer extends SocketServer
         $this->routes->add($name, $route);
     }
 
+    /**
+     * Add a route accesible only by the GET method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function get(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['GET']);
+
+        $this->addRoute($routeName, $route);
+    }
+
+    /**
+     * Add a route accesible only by the POST method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function post(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['POST']);
+
+        $this->addRoute($routeName, $route);
+    }
+
+    /**
+     * Add a route accesible only by the PUT method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function put(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['PUT']);
+
+        $this->addRoute($routeName, $route);
+    }
+
+    /**
+     * Add a route accesible only by the PATCH method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function patch(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['PATCH']);
+
+        $this->addRoute($routeName, $route);
+    }
+
+    /**
+     * Add a route accesible only by the DELETE method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function delete(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['DELETE']);
+
+        $this->addRoute($routeName, $route);
+    }
+
+    /**
+     * Add a route accesible only by the OPTIONS method.
+     *
+     * @param string $path
+     * @param callable $callback
+     * @return void
+     */
+    public function options(string $path, callable $callback): void
+    {
+        $routeName = uniqid('route');
+
+        $route = new Route($path, ['_controller' => $callback]);
+        $route->setMethods(['OPTIONS']);
+
+        $this->addRoute($routeName, $route);
+    }
+
     public function onData(DataEvent $event): void
     {
         $data = $event->getData();

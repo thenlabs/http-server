@@ -1,7 +1,7 @@
 
 # HttpServer
 
-A [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol) server written in [PHP](https://en.wikipedia.org/wiki/PHP) with help of the Symfony Components.
+A HTTP server written in PHP with help of the Symfony Components.
 
 >If you like this project gift us a ⭐.
 
@@ -26,7 +26,7 @@ use ThenLabs\HttpServer\HttpServer;
 $config = [
     'host' => '127.0.0.1',
     'port' => 8080,
-    'document_root' => __DIR__.'/vendor/thenlabs/http-server/tests/document_root',
+    'document_root' => __DIR__.'/vendor/thenlabs/http-server/tests/Functional/document_root',
 ];
 
 $server = new HttpServer($config);
@@ -51,24 +51,19 @@ Once does it, we can navigate to the URL and we will see the respectively page.
 
 The HttpServer use the [Symfony Routing Component](https://github.com/symfony/routing) for handle the routing, therefore, you can use all the his possibilities.
 
-The next example shown the way to creating a custom route.
+The next example shown the way to creating a custom route which only can be access by a GET request.
 
 ```php
 <?php
 
-use Symfony\Component\Routing\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 // ...
 
-$articleRoute = new Route('/article/{id}', [
-    '_controller' => function (Request $request, array $parameters) {
-        return new Response("This is the article {$parameters['id']}");
-    },
-]);
-
-$server->addRoute('article', $articleRoute);
+$server->get('/article/{id}', function (Request $request, array $parameters): Response {
+    return new Response("This is the article {$parameters['id']}");
+});
 
 // ...
 ```
