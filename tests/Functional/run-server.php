@@ -11,6 +11,7 @@ $config = [
     'host' => $argv[1] ?? '127.0.0.1',
     'port' => $argv[2] ?? 8080,
     'document_root' => __DIR__.'/document_root',
+    'loop_delay' => 100000, // the default value is 1 but causes conflicts with xdebug.
 ];
 
 $server = new HttpServer($config);
@@ -36,7 +37,3 @@ $server->get('/custom/{id}', function (Request $request, array $parameters): Res
 });
 
 $server->start();
-
-while (true) {
-    $server->run();
-}
