@@ -62,19 +62,22 @@ testCase(function () {
         $logsFileContent = file_get_contents($logsFileName);
 
         $expectedLines = [
-            'GET:/...OK',
-            'GET:/css/styles.css...OK',
-            'GET:/css/unexistent-file.css...Not Found',
-            'GET:/js/scripts.js...OK',
-            'GET:/img/image.gif...OK',
-            'GET:/img/image.png...OK',
-            'GET:/img/image.jpeg...OK',
-            'GET:/favicon.ico...OK',
-            "GET:/custom/{$id}?title={$title}...OK",
+            'GET:/...OK(200)',
+            'GET:/css/styles.css...OK(200)',
+            'GET:/css/unexistent-file.css...Not Found(404)',
+            'GET:/js/scripts.js...OK(200)',
+            'GET:/img/image.gif...OK(200)',
+            'GET:/img/image.png...OK(200)',
+            'GET:/img/image.jpeg...OK(200)',
+            'GET:/favicon.ico...OK(200)',
+            "GET:/custom/{$id}?title={$title}...OK(200)",
         ];
 
+        $this->assertStringNotContainsString('Connection from', $logsFileContent);
+        $this->assertStringNotContainsString('has been closed.', $logsFileContent);
+
         foreach ($expectedLines as $line) {
-            $this->assertStringContainsString($line, $logsFileContent);
+            $this->assertStringContainsString('thenlabs_http_server.DEBUG: '.$line, $logsFileContent);
         }
 
         $driver->close();

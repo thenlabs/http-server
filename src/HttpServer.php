@@ -39,6 +39,13 @@ class HttpServer extends SocketServer
         $port = $config['port'] ?? 80;
 
         $config['socket'] = "tcp://{$host}:{$port}";
+        $config['logger_name'] = $config['logger_name'] ?? 'thenlabs_http_server';
+        $config['log_messages'] = [
+            'server_started' => 'Server started in %SOCKET%',
+            'server_stopped' => 'Server stopped.',
+            'new_connection' => null,
+            'disconnection'  => null,
+        ];
 
         parent::__construct($config);
 
@@ -251,9 +258,11 @@ class HttpServer extends SocketServer
 
         $method = $this->currentRequest->getMethod();
         $uri = Utils::getRequestUri($this->currentRequest);
-        $status = Response::$statusTexts[$response->getStatusCode()];
 
-        $this->logger->info("{$method}:{$uri}...{$status}");
+        $statusCode = $response->getStatusCode();
+        $status = Response::$statusTexts[$statusCode];
+
+        $this->logger->debug("{$method}:{$uri}...{$status}({$statusCode})");
 
         $connection->close();
 
